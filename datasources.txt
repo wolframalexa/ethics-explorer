@@ -1,0 +1,54 @@
+######## Gender and Race Data #########
+
+Data is from link: https://www.bls.gov/cps/cpsaat18.htm from 2020
+When more than one BLS industry is selected, a percentage spanning the BLS industries is calculated.
+
+DB INDUSTRY 					| INDUSTRY IN BLS-SPEAK
+-------------------------------------------------------------------------
+Agriculture					| Agriculture, forestry, fishing, and hunting
+Aerospace & Automotive				| Automotive repair and maintenance
+						| Automotive parts, accessories, and tire stores
+Chemical & Pharmaceutical			| Chemicals Manufacturing
+Construction					| Construction
+Defense						| *
+Electric Power, Telecom, & Utility		| Utilities
+Electronics					| Computer systems design and related services
+Energy						| Mining, quarrying, and oil and gas extraction
+Manufacturing (Mining, paper, steel, textiles)	| Manufacturing (excluding chemicals manufacturing)
+Wastewater					| Waste management and remediation services
+Education					| Educational services
+Financial Services				| Finance and insurance
+Healthcare					| Health care and social assistance
+Software					| Software publishers
+						| Internet publishing and broadcasting and websearch portals
+						| Data processing, hosting, and related services
+Transportation					| Transportation and warehousing
+Other						| NULL
+
+* Data obtained from Congressional Research Service report: https://crsreports.congress.gov/product/pdf/R/R44321
+
+
+######## Union Data #########
+
+Data is from: https://www.bls.gov/news.release/union2.t03.htm#union_a03.f.3
+
+DB INDUSTRY                                     | INDUSTRY IN BLS-SPEAK
+-------------------------------------------------------------------------          
+Agriculture                                     | Agriculture and related industries
+Aerospace & Automotive                          | Professional and technical services
+Chemical & Pharmaceutical                       | Nondurable goods manufacturing     
+Construction                                    | Construction                     
+Defense                                         | ** 
+Electric Power, Telecom, & Utility              | Utilities                                             
+Electronics                                     | Computer and mathematical occupations          
+Energy                                          | Mining, quarrying, and oil and gas extraction         
+Manufacturing (Mining, paper, steel, textiles)  | Manufacturing
+Wastewater                                      | Management, administrative, and waste services             
+Education                                       | Educational services                                  
+Financial Services                              | Finance                        
+Healthcare                                      | Health care and social assistance                     
+Software                                        | Computer and mathematical occupations 
+Transportation                                  | Transportation and warehousing                 
+Other                                           | Other services
+
+** It is assumed there are no unions in the military
