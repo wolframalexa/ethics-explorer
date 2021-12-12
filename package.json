@@ -1,0 +1,29 @@
+{
+  "name": "cooper-union-sqlite-json-storage",
+  "version": "0.1.0",
+  "description": "An example of a SQLite CRUD application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cooper-union-sqlite-client": "^0.1.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
+    "sqlite3": "^5.0.2"
+  },
+  "engines": {
+    "node": "12.x"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/cooper-union-sqlite-json-storage"
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "glitch",
+    "express"
+  ]
+}

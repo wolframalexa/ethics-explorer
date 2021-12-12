@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Engineering Ethics Explorer!</title>
+    <meta
+      name="description"
+      content="Exploring ethical careers in engineering"
+    />
+    <link
+      id="favicon"
+      rel="icon"
+      href="https://glitch.com/edit/favicon-app.ico"
+      type="image/x-icon"
+    />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+
+  <body>
+    <main>
+      <h1>Welcome</h1>
+      <p>Want to think more deeply about your engineering impact?</p>
+
+      <p>
+        A lot of us go into engineering because we’re motivated by altruism and
+        genuinely want to make the world a better place. It can, however, be
+        difficult to live your values when you’re searching for a job. This tool
+        will help you consider the ethical implications of various career paths
+        in engineering. These ethical challenges span six areas: Equity, Labor,
+        Corporate Citizenship, Privacy, Environment, and Safety.
+      </p>
+
+      <form id="query">
+        <script>
+          function createOption(ddl, text, value) {
+            var opt = document.createElement("option");
+            opt.value = value;
+            opt.text = text;
+            ddl.options.add(opt);
+          }
+
+          function createDropdown(data, parent) {
+            parent.innerHTML = " ";
+            var opt = document.createElement("option");
+            opt.value = "select";
+            opt.text = "Select an industry";
+            parent.options.add(opt);
+
+            for (var i = 0; i < data.length; i++) {
+              ///create dropdown elements based on data length and append them to the parent element
+              createOption(parent, data[i].iname, data[i].iid);
+            }
+
+            makeSalary(document.getElementById("salary"), data[0].start_salary);
+          }
+
+          function createDropdown2(data, parent) {
+            parent.innerHTML = " ";
+            var opt = document.createElement("option");
+            opt.value = "select";
+            opt.text = "Select an area of concern";
+            parent.options.add(opt);
+
+            for (var i = 0; i < data.length; i++) {
+              ///create dropdown elements based on data length and append them to the parent element
+              createOption(parent, data[i].areaname, data[i].areaid);
+            }
+          }
+
+          var fetchDropdown = async (value, element, areas) => {
+            var data = fetch(`/dropdown/${value}`).then(response =>
+              response.json()
+            );
+            data_promised = await data;
+
+            createDropdown(data_promised, element); // create second dropdown: industries
+
+            // remove the text when changing first dropdown
+            var par = document.getElementById("outtext");
+            par.innerHTML = " ";
+            document.getElementById("sources").innerHTML = " ";
+            document.getElementById("stats").innerHTML = " ";
+          };
+
+          var fetchDropdown2 = async (that, value, element) => {
+            var data = fetch(`/dropdown2/${value}`).then(response =>
+              response.json()
+            );
+            data_promised = await data;
+
+            console.log("dropdown2");
+            console.log(data_promised);
+            createDropdown2(data_promised, element);
+
+            // remove the text when changing second dropdown
+            var par = document.getElementById("outtext");
+            par.innerHTML = " ";
+
+            var par2 = document.getElementById("stats");
+            par2.innerHTML = " ";
+          };
+
+          var getText = async (aid, iid, element) => {
+            var data = fetch(`/text/${aid}/${iid}`).then(response =>
+              response.json()
+            );
+            promised = await data;
+            promised = promised[0];
+            makeText(element, promised.exp_text);
+
+            var raceStats = fetch(`/racedata/${iid}`).then(response =>
+              response.json()
+            );
+            raceStats = await raceStats;
+            raceStats = raceStats[0];
+            makeIndustryStats(
+              document.getElementById("stats"),
+              promised.perc_women,
+              promised.perc_union,
+              raceStats.perc_white,
+              raceStats.perc_black,
+              raceStats.perc_asian,
+              raceStats.perc_hisp_latino
+            );
+
+            makeSources(
+              document.getElementById("sources"),
+              promised.url1,
+              promised.url2,
+              promised.url3
+            );
+          };
+
+          function makeSources(parent, url1, url2, url3) {
+            parent.innerHTML = "Read More Here:";
+            parent.appendChild(document.createElement("br"));
+            var par = document.createElement("a");
+            par.innerHTML = " 1 ";
+            par.setAttribute("href", "https://" + url1);
+            parent.appendChild(par);
+            parent.appendChild(document.createElement("br"));
+
+            if (url2 !== null) {
+              var par2 = document.createElement("a");
+              par2.innerHTML = "2 ";
+              par2.setAttribute("href", "https://" + url2);
+              parent.appendChild(par2);
+              parent.appendChild(document.createElement("br"));
+
+              if (url3 !== null) {
+                var par3 = document.createElement("a");
+                par3.innerHTML = " 3 ";
+                par3.setAttribute("href", "https://" + url3);
+                parent.appendChild(par3);
+                parent.appendChild(document.createElement("br"));
+              }
+            }
+
+            parent.appendChild(document.createElement("br"));
+          }
+
+          function makeText(parent, text) {
+            parent.innerHTML = " ";
+            var par = document.createElement("p");
+            par.innerHTML = text;
+            parent.appendChild(par);
+          }
+
+          function makeIndustryStats(
+            parent,
+            women,
+            union,
+            white,
+            black,
+            asian,
+            hisp
+          ) {
+            parent.innerHTML = " ";
+            var par = document.createElement("p");
+            par.innerHTML =
+              "This industry has " +
+              women.toString() +
+              "% women and " +
+              union.toString() +
+              "% union members, compared to the national average of 46.8% and 10.3%";
+            parent.appendChild(par);
+
+            var par2 = document.createElement("p");
+            par2.innerHTML =
+              "This industry is " +
+              white.toString() +
+              "% white, " +
+              black.toString() +
+              "% Black, " +
+              asian.toString() +
+              "% Asian, and " +
+              hisp.toString() +
+              "% Hispanic and Latino. The overall U.S. workforce is 78% white, 12.1% Black, 6.4% Asian, and 17.6% Hispanic or Latino.";
+            parent.appendChild(par2);
+          }
+
+          function makeSalary(parent, salary) {
+            parent.innerHTML = " ";
+            var par = document.createElement("p");
+            console.log(salary);
+            par.innerHTML =
+              "This major has an average starting salary of $" + salary.toString();
+            parent.appendChild(par);
+          }
+        </script>
+
+        <select
+          name="majors"
+          id="majors"
+          onchange="fetchDropdown(this.value, document.getElementById('industries'), document.getElementById('areas'))"
+        >
+          <option value="">Select major</option>
+          <option value="10">Mechanical Engineering</option>
+          <option value="12">Electrical Engineering</option>
+          <option value="11">Chemical Engineering</option>
+          <option value="13">Civil Engineering</option>
+        </select>
+
+        <div id="salary"></div>
+
+        <select
+          name="industries"
+          id="industries"
+          onchange="fetchDropdown2(document.getElementById('majors'), this.value, document.getElementById('areas'))"
+        >
+        </select>
+
+        <div id="stats"></div>
+
+        <select
+          name="areas"
+          id="areas"
+          onchange="getText(this.value, document.getElementById('industries').value, document.getElementById('outtext'))"
+        >
+        </select>
+
+        <div id="outtext"></div>
+        <div id="sources"></div>
+      </form>
+
+      <section class="data-list">
+        <ul id="data"></ul>
+      </section>
+
+      <section id="about">
+        <h1>About</h1>
+        <h2>Using the tool</h2>
+        <ul>
+          You should choose a job considering many factors, including your
+          skills, your interests, location, compensation, opportunities for
+          growth, team structure and makeup, and job responsibilities, in addition to ethics. This tool
+          will not recommend a certain path - that is up to you.
+        </ul>
+        <ul>
+          This tool should not be used to cast negative judgment on people. We
+          all make choices based on the information we have at the time and for
+          a variety of reasons.
+        </ul>
+        <ul>
+          You should not be discouraged about ethical challenges you may face -
+          no field is perfect. Instead, I hope you will consider ways you can be
+          the change you wish to see.
+        </ul>
+        <ul>
+          The industries here are fairly broad and there are a lot of grey
+          areas, and not every potential job is covered. There are also
+          potentially ethical jobs in industries you wouldn't otherwise
+          consider.
+        </ul>
+
+        <h2>Vision</h2>
+        <p>
+          I became an engineer because I was good at math and science in high
+          school, and I was told that engineering would allow me to use my
+          technical aptitude for social good. Starting engineering school, I
+          found that many students, particularly women and other
+          underrepresented groups, shared my aspirations of social good.
+          However, most graduates were entering the conventional engineering job
+          market, and their jobs were oriented towards profit rather than social
+          impact.
+        </p>
+        <p>
+          It is time for an ethical reckoning in engineering education. As
+          someone who cares deeply about stopping climate change, I am
+          disappointed in the ways our profession has enabled carbon-intensive
+          industries, and we must transform it. Obviously, we need systemic
+          change – but your individual choice of career will nonetheless make a
+          difference. With this tool, my goal is to create a dialogue about
+          ethical careers for engineering students.
+        </p>
+        <p>
+          This tool does not prescribe a certain path – it doesn’t make sense
+          for us all to work on the same societal problem – but
+          <b
+            >I hope you will use it to reflect on your ethical limits, what
+            types of work you feel are acceptable, and how you will use your
+            power as an engineer to work towards a more just and equitable
+            society.</b
+          >
+        </p>
+
+        <h2>Explanation of Ethical Areas</h2>
+        <p>
+          Although there are undoubtedly unlimited areas of ethical exposure,
+          some of which we don’t even know of yet, I’ve identified six main
+          areas to explore in this tool:
+        </p>
+        <ul>
+          <b>Equity</b
+          >: How does this industry’s work contribute to or detract from racial
+          equity, gender parity, LGBTQ+ and disability rights, economic
+          inequality, etc?
+        </ul>
+        <ul>
+          <b>Labor</b
+          >: What are this industry’s practices like with regards to wages and
+          benefits, unionization, workplace safety, and how do those practices
+          affect labor rights and employee quality of life writ large?
+        </ul>
+        <ul>
+          <b>Corporate Citizenship</b
+          >: How does this industry affect communities? Do companies pay taxes?
+          What do they lobby for? To what extent does this company prioritize
+          profit over and above social good when making decisions?
+        </ul>
+        <ul>
+          <b>Privacy</b
+          >: How does this industry’s business model affect consumer and worker
+          privacy?
+        </ul>
+        <ul>
+          <b>Environment</b
+          >: How does this industry propagate climate change and other types of
+          ecological devastation?
+        </ul>
+        <ul>
+          <b>Safety</b
+          >: How does this industry affect the safety of the general public?
+        </ul>
+
+        <p>
+          Many ethical issues span these categories – for example, the use of
+          pesticides in agriculture is an environmental concern because these
+          can pollute watersheds, but it also a safety concern for those who eat
+          food. Also, not every industry will have a clear-cut ethical issue for
+          every category, and the list of issues is not exhaustive. These
+          categories and the discussion are presented as a starting point.
+        </p>
+
+        <h2>Other Resources</h2>
+        <p>
+          If you are a Cooper Union student, you can contact the Center for
+          Career Development on
+          <a href="https://joinhandshake.com/">Handshake</a> to discuss career
+          exploration, including ethical careers, and to take self-assessments.
+          <a href="https://www.onetonline.org/">ONET</a> is another useful tool
+          for career exploration.
+        </p>
+
+        <p>Please see the below for more ethical-career-oriented resources:</p>
+        <ul>
+          <a href="https://greennewcareers.org/">Green New Careers</a>
+        </ul>
+        <ul>
+          <a href="https://greenjobsdata.com/">Green Jobs</a>
+        </ul>
+        <ul>
+          <a href="https://weareimpactful.org/">Impactful</a>
+        </ul>
+        <ul>
+          <a href="https://www.kernelmag.io/">Kernel Magazine</a>
+        </ul>
+
+        <h2>Acknowledgements</h2>
+        <p>
+          Thank you to Ricky Yurewitch for his generous technical help, and to
+          Kit Nicholls for his invaluable help in ideating the project. Many
+          thanks to Jolie Woodson and Toni Burrell from the Cooper Union Center
+          for Career Development, who provided feedback on the initial version.
+        </p>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        This tool was created by Alexa Jakob as a final project for HUM99:
+        Engineering Ethics and ECE464: Databases at the Cooper Union. You can
+        reach Alexa with any questions and improvements
+        <a href="mailto:jakob@cooper.edu">here</a>.
+      </p>
+    </footer>
+  </body>
+</html>
